@@ -1,14 +1,18 @@
 import React, { memo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { filterIndex } from "../../api/utils";
-import Scroll from "../../baseUI/Scroll";
 import { getRankList } from "./store/index";
+
+import { renderRoutes } from "react-router-config";
+
+import { filterIndex } from "../../api/utils";
+
+import Scroll from "../../baseUI/Scroll";
+import Loading from "../../baseUI/Loading";
 
 import { Container, List, ListItem, SongList } from "./style";
 import { EnterLoading } from "../Singers/style";
-import Loading from "../../baseUI/Loading";
 
-export default memo(function Rank() {
+export default memo(function Rank(props) {
   const { rankList, loading } = useSelector((state) => ({
     rankList: state.getIn(["rank", "rankList"]).toJS(),
     loading: state.getIn(["rank", "loading"]),
@@ -17,7 +21,7 @@ export default memo(function Rank() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getRankList());
-  }, []);
+  }, [dispatch]);
 
   const globalStartIndex = filterIndex(rankList);
   const officialList = rankList.slice(0, globalStartIndex);
@@ -25,13 +29,19 @@ export default memo(function Rank() {
 
   console.log(rankList);
 
-  const enterDetail = (name) => {};
+  const enterDetail = ({ id }) => {
+    props.history.push(`/rank/${id}`);
+  };
 
   const renderRankList = (list, global) => {
     return (
       <List globalRank={global}>
         {list.map((item) => (
-          <ListItem key={item.coverImgUrl} tracks={item.tracks} onClick={() => enterDetail(item.name)}>
+          <ListItem
+            key={item.coverImgUrl}
+            tracks={item.tracks}
+            onClick={() => enterDetail(item)}
+          >
             <div className="img_wrapper">
               <img src={item.coverImgUrl} alt="" />
               <div className="decorate"></div>
@@ -80,6 +90,7 @@ export default memo(function Rank() {
           ) : null}
         </div>
       </Scroll>
+      {renderRoutes(props.route.routes)}
     </Container>
   );
 });

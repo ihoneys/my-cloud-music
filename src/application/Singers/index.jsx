@@ -5,33 +5,24 @@ import Horizen from "../../baseUI/horizen-item";
 import { categoryTypes, alphaTypes } from "../../api/local-data";
 import { NavContanier, List, ListItem, ListContainer } from "./style";
 
-import { getSingerList, getHotSingerList, changeEnterLoading, changePageCount, refreshMoreSingerList, changePullUpLoading, changePullDownLoading, refreshMoreHotSingerList } from "./store/actionCreators";
+import {
+  getSingerList,
+  getHotSingerList,
+  changeEnterLoading,
+  changePageCount,
+  refreshMoreSingerList,
+  changePullUpLoading,
+  changePullDownLoading,
+  refreshMoreHotSingerList,
+} from "./store/actionCreators";
 
 import Scroll from "../../baseUI/Scroll";
 import LazyLoad, { forceCheck } from "react-lazyload";
 import musicCover from "../../assets/music.png";
 import Loading from "../../baseUI/Loading";
+import { renderRoutes } from "react-router-config";
 
-console.log(require("../../assets/music.png"));
-const RenderSingerList = (props) => {
-  const { singerList } = props;
-  return (
-    <List>
-      {singerList.map((item, index) => (
-        <ListItem key={item.accountId + "" + index}>
-          <div className="img_wrapper">
-            <LazyLoad placeholder={<img width="100%" height="100%" src={musicCover} alt="music" />}>
-              <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music" />
-            </LazyLoad>
-          </div>
-          <span className="name">{item.name}</span>
-        </ListItem>
-      ))}
-    </List>
-  );
-};
-
-export default memo(function Singers() {
+export default memo(function Singers(props) {
   let [category, setCategory] = useState(categoryTypes[0].key);
   let [categoryItem, setCategoryItem] = useState(categoryTypes[0]);
   let [alpha, setAlpha] = useState(alphaTypes[0].key);
@@ -75,7 +66,13 @@ export default memo(function Singers() {
     }
   };
 
-  const { singerList, enterLoading, pullUpLoading, pullDownLoading, pageCount } = useSelector(
+  const {
+    singerList,
+    enterLoading,
+    pullUpLoading,
+    pullDownLoading,
+    pageCount,
+  } = useSelector(
     (state) => ({
       singerList: state.getIn(["singers", "singerList"]),
       enterLoading: state.getIn(["singers", "enterLoading"]),
@@ -94,7 +91,7 @@ export default memo(function Singers() {
     if (!singerList.length) {
       dispatch(getHotSingerList());
     }
-  }, []);
+  }, [dispatch, singerList]);
 
   // if (!enterLoading) {
   //   scrollRef.current.refresh();
@@ -110,20 +107,74 @@ export default memo(function Singers() {
     pullDownRefreshDispatch(type, area, alpha);
   };
 
-  console.log(singerList, "singerList");
+  const enterDetail = ({ id }) => {
+    props.history.push(`/singers/${id}`);
+  };
+
+  const renderSingerList = () => {
+    return (
+      <List>
+        {singerList.map((item, index) => (
+          <ListItem
+            key={item.accountId + "" + index}
+            onClick={() => enterDetail(item)}
+          >
+            <div className="img_wrapper">
+              <LazyLoad
+                placeholder={
+                  <img
+                    width="100%"
+                    height="100%"
+                    src={musicCover}
+                    alt="music"
+                  />
+                }
+              >
+                <img
+                  src={`${item.picUrl}?param=300x300`}
+                  width="100%"
+                  height="100%"
+                  alt="music"
+                />
+              </LazyLoad>
+            </div>
+            <span className="name">{item.name}</span>
+          </ListItem>
+        ))}
+      </List>
+    );
+  };
 
   return (
     <div>
       <NavContanier>
-        <Horizen list={categoryTypes} title={"分类（默认热门）："} handleClick={handleUpdateCategory} oldVal={category} />
-        <Horizen list={alphaTypes} title={"首字母:"} handleClick={(val) => handleUpdateAlpha(val)} oldVal={alpha}></Horizen>
+        <Horizen
+          list={categoryTypes}
+          title={"分类（默认热门）："}
+          handleClick={handleUpdateCategory}
+          oldVal={category}
+        />
+        <Horizen
+          list={alphaTypes}
+          title={"首字母:"}
+          handleClick={(val) => handleUpdateAlpha(val)}
+          oldVal={alpha}
+        ></Horizen>
       </NavContanier>
       <ListContainer>
-        <Scroll onScroll={forceCheck} ref={scrollRef} pullUp={handlePullUp} pullDown={handlePullDown} pullUpLoading={pullUpLoading} pullDownLoading={pullDownLoading}>
-          <RenderSingerList singerList={singerList} />
+        <Scroll
+          onScroll={forceCheck}
+          ref={scrollRef}
+          pullUp={handlePullUp}
+          pullDown={handlePullDown}
+          pullUpLoading={pullUpLoading}
+          pullDownLoading={pullDownLoading}
+        >
+          {renderSingerList()}
         </Scroll>
       </ListContainer>
       <Loading show={enterLoading}></Loading>
+      {renderRoutes(props.route.routes)}
     </div>
   );
 });

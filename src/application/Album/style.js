@@ -77,9 +77,9 @@ export const TopDesc = styled.div`
       position: absolute;
       right: 2px;
       top: 2px;
-      font-size: ${style ["font-size-s"]};
+      font-size: ${style["font-size-s"]};
       line-height: 15px;
-      color: ${style ["font-color-light"]};
+      color: ${style["font-color-light"]};
       .play {
         vertical-align: top;
       }
@@ -99,10 +99,10 @@ export const TopDesc = styled.div`
     padding: 0 10px;
     .title {
       max-height: 70px;
-      color: ${style ["font-color-light"]};
+      color: ${style["font-color-light"]};
       font-weight: 700;
       line-height: 1.5;
-      font-size: ${style ["font-size-l"]};
+      font-size: ${style["font-size-l"]};
     }
     .person {
       display: flex;
@@ -118,8 +118,8 @@ export const TopDesc = styled.div`
       }
       .name {
         line-height: 20px;
-        font-size: ${style ["font-size-m"]};
-        color: ${style ["font-color-desc-v2"]};
+        font-size: ${style["font-size-m"]};
+        color: ${style["font-color-desc-v2"]};
       }
     }
   }
@@ -137,8 +137,8 @@ export const Menu = styled.div`
     flex-direction: column;
     line-height: 20px;
     text-align: center;
-    font-size: ${style ["font-size-s"]};
-    color: ${style ["font-color-light"]};
+    font-size: ${style["font-size-s"]};
+    color: ${style["font-color-light"]};
     z-index:1000;
     font-weight: 500;
     .iconfont {
@@ -151,7 +151,7 @@ export const Menu = styled.div`
 export const SongList = styled.div`
   border-radius: 10px;
   opacity: 0.98;
-  ${props => props.showBackground ? `background: ${style["highlight-background-color"]}`: ""}
+  ${props => props.showBackground ? `background: ${style["highlight-background-color"]}` : ""}
   .first_line {
     box-sizing: border-box;
     padding: 10px 0;
