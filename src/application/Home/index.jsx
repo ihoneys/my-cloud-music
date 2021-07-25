@@ -1,12 +1,19 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { renderRoutes } from "react-router-config";
 import { NavLink } from "react-router-dom";
+import Player from "../Player";
 
 import { Tab, TabItem, Top } from "./style";
 
 function Home(props) {
   const { route } = props;
+
+  const { palying } = useSelector((state) => ({
+    playing: state.getIn(["player", "playing"]),
+  }));
+  console.log(palying);
   return (
     <div>
       <Top>
@@ -32,6 +39,8 @@ function Home(props) {
         </NavLink>
       </Tab>
       {renderRoutes(route.routes)}
+      {palying ? <Player></Player> : null}
+      <Player></Player>
     </div>
   );
 }
